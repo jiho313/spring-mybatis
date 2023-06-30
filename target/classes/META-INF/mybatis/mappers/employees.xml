@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="kr.co.jhta.hr.mapper.EmployeeMapper">
+
+	<!-- 
+		모든 직원 목록 조회하기
+			+ List<Employee> getAllEmployees()
+			+ id : getAllEmployees
+			+ parameterType : 없음
+			+ resultType : Employee
+	 -->
+	<select id="getAllEmployees" resultType="kr.co.jhta.hr.vo.Employee">
+		select employee_id		as id,
+			   first_name		as firstName,
+			   last_name		as lastName,
+			   email,
+			   phone_number		as phoneNumber,
+			   hire_date		as hireDate,
+			   job_id			as "job.id",
+			   salary,
+			   commission_pct	as commissionPct,
+			   manager_id		as "manager.id",
+			   department_id	as "department.id"
+		from employees
+		order by employee_id asc
+	</select>
+	
+	<!-- 
+		Employee getEmployeeDetail(int empId);
+			id: getEmployeeDetail
+			parameterType: int
+			resultTypr: Employee
+	 -->
+	<select id="getEmployeeDetail" parameterType="int" resultType="Emp">
+		select E.employee_id		as id,
+			   E.first_name			as firstName,
+			   E.last_name			as lastName,
+			   E.email,
+			   E.phone_number		as phoneNumber,
+			   E.hire_date			as hireDate,
+			   E.job_id				as "job.id",
+			   J.job_title			as "job.title",
+			   E.salary,
+			   E.commission_pct		as commissionPct,
+			   E.manager_id			as "manager.id",
+			   M.first_name			as "manager.firstName",
+			   M.last_name			as "manager.lastName",
+			   E.department_id		as "department.id",
+			   D.department_name	as "department.name"
+		from employees E, departments D, jobs J, employees M
+		where E.department_id = D.department_id(+)
+		and E.job_id = J.job_id
+		and E.manager_id = M.employee_id(+)
+		and E.Employee_id = #{value}
+	</select>	 
+	 
+	 <select id="getEmployeeById" parameterType="int" resultType="Emp">
+	 	select employee_id		as id,
+	 		   first_name		as firstName,
+	 		   last_name		as lastName,
+	 		   email,
+	 		   phone_number		as phoneNumber,
+	 		   hire_date		as hireDate,
+	 		   job_id			as "job.id",
+	 		   salary,
+	 		   commission_pct	as commissionPct,
+	 		   manager_id		as "manager.id",
+	 		   department_id	as "department.id"
+	 	from employees
+	 	where employee_id = #{value}
+	 </select>
+	 
+	<resultMap type="Emp" id="EmpResultMap">
+		<id column="EMPLOYEE_ID" property="id"/>
+		<result column="FIRST_NAME" property="firstName"/>
+		<result column="LAST_NAME" property="lastName"/>
+		<result column="EMAIL" property="email"/>
+		<result column="PHONE_NUMBER" property="phoneNumber"/>
+		<result column="HIRE_DATE" property="hireDate"/>
+		<result column="SALARY" property="salary"/>
+		<result column="COMMISSION_PCT" property="commissionPct"/>
+		<association property="job" 
+					 select="kr.co.jhta.hr.mapper.JobMapper.getJobById" 
+					 column="JOB_ID"/>
+		<association property="manager" 
+					 select="getEmployeeById" 
+					 column="MANAGER_ID"/>
+		<association property="department" 
+					 select="kr.co.jhta.hr.mapper.DepartmentMapper.getDepartmentById" 
+					 column="DEPARTMENT_ID"/>
+	</resultMap>
+	 
+	 <select id="getEmployeeDetailById" parameterType="int" resultMap="EmpResultMap">
+	 	select *
+	 	from employees
+	 	where employee_id = #{value}
+	 </select>
+	 
+	 
+</mapper>
