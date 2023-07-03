@@ -1,6 +1,7 @@
 package kr.co.jhta.hr.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -15,4 +16,6 @@ public interface EmployeeMapper {
 	
 	Employee getEmployeeDetailById(int empId);
 	Employee getEmployeeById(int managerId);
+	
+	List<Employee> searchEmployees(Map<String, Object> param);
 }

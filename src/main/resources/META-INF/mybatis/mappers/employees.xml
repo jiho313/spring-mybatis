@@ -96,5 +96,34 @@
 	 	where employee_id = #{value}
 	 </select>
 	 
-	 
+	 <!-- 
+	 	List<Employee> searchEmployees(Map<String, Object> param);
+	  -->
+	  
+	<select id="searchEmployees" parameterType="map" resultType="Emp">
+		select employee_id	as id,
+		 	   first_name			as firstName,
+			   last_name			as lastName,
+			   job_id				as "job.id",
+			   salary,				
+			   department_id		as "department.id"
+		from employees
+		<where>
+			<if test="job != null">
+				job_id = #{job}			
+			</if>
+			<if test="min != null and max != null">
+			<!-- xml파일안에서는 '<' 비교연산자를 단독 사용할 수 없다.
+				 '<='비교 연산자와 같은 기능을 하고 싶을 때는 이스케이프 문자를 이용해 '&lt;=' 구현할 수 있다. -->
+				and salary between #{min} and #{max}
+			</if>
+			<if test="depts != null">
+				<foreach item="deptid" index="" collection="depts"
+					open="and department_id in (" separator="," close=")">
+					#{deptid}	
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
 </mapper>

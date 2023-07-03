@@ -1,6 +1,7 @@
 package kr.co.jhta.hr.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,12 @@ public class HrService {
 	public Department getDepartmentWithEmployees(int deptId) {
 		return departmentMapper.getDepartmentByIdWithEmployees(deptId);
 	}
+	
+	// 직원정보 검색 서비스
+	public List<Employee> searchEmployees(Map<String, Object> param) {
+		return employeeMapper.searchEmployees(param);
+	}
+	
 	// 신규 직원정보 등록 서비스
 	
 	// 직원 급여정보 변경 서비스
